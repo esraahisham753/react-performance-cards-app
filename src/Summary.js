@@ -1,9 +1,22 @@
 import React from "react";
 import levenshtein from "levenshtein";
 
-export class Summary extends React.Component {
-  render() {
-    const cards = Object.values(this.props.cards);
+/*function shouldComponentUpdate(nextProps) {
+  const oldKeys = Object.keys(props.cards);
+  const newKeys = Object.keys(nextProps.cards);
+
+  console.log({
+    oldKeysLen: oldKeys.length,
+    newKeysLen: newKeys.length
+  })
+  return oldKeys.length !== newKeys.length;
+}*/
+
+export const Summary = ({props}) => {
+  
+
+  
+    const cards = Object.values(props.cards);
 
     const distances = { max: 0, min: 100000 };
     cards.forEach(currentCard => {
@@ -35,4 +48,4 @@ export class Summary extends React.Component {
       </div>
     );
   }
-}
+

@@ -48,8 +48,8 @@ function App() {
   const boardRef = useRef(null);
   const boardSize = useComponentSize(boardRef);
   const { height, width } = boardSize;
-
   const showDialog = useCallback(() => setIsAddOpen(true), []);
+ 
 
   useEffect(() => {
     if (height && width) {
@@ -60,8 +60,9 @@ function App() {
   }, [height, width]);
 
   function handleDelete(card) {
-    delete cards[card.id];
-    setCards({ ...cards });
+    let clonedCards = {...cards};
+    delete clonedCards[card.id];
+    setCards({ ...clonedCards });
   }
 
   const cardEls = Object.values(cards).map(card => (
