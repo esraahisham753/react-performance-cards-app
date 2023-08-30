@@ -1,8 +1,8 @@
 import React from "react";
 
-export class Card extends React.Component {
-  render() {
-    const { card, onDragStart, onDragEnd, onDoubleClick } = this.props;
+export const Card = React.memo(function Card(props) {
+  
+    const { card, onDragStart, onDragEnd, onDoubleClick } = props;
 
     return (
       <div
@@ -11,6 +11,7 @@ export class Card extends React.Component {
             x: ev.clientX - parseFloat(ev.currentTarget.style.left),
             y: ev.clientY - parseFloat(ev.currentTarget.style.top)
           };
+          console.log("Calculated clickpffset");
           onDragStart(clickOffset);
         }}
         onMouseUp={onDragEnd}
@@ -29,5 +30,8 @@ export class Card extends React.Component {
         {card.label}
       </div>
     );
-  }
-}
+  
+}, ({card: oldCard}, {card: newCard}) => oldCard.id === newCard.id &&
+oldCard.position.left === newCard.position.left && 
+oldCard.position.top === newCard.position.top
+);

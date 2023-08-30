@@ -1,23 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import levenshtein from "levenshtein";
+import "./Summary.css";
+import { CornerButton } from "./CornerButton";
 
-/*function shouldComponentUpdate(nextProps) {
-  const oldKeys = Object.keys(props.cards);
-  const newKeys = Object.keys(nextProps.cards);
+export const Summary = React.memo(
+  function Summary(props) {
+    const [position, setPosition] = useState("top-right");
 
-  console.log({
-    oldKeysLen: oldKeys.length,
-    newKeysLen: newKeys.length
-  })
-  return oldKeys.length !== newKeys.length;
-}*/
-
-export const Summary = ({props}) => {
-  
-
-  
     const cards = Object.values(props.cards);
 
+
+    console.time('calc-distances')
     const distances = { max: 0, min: 100000 };
     cards.forEach(currentCard => {
       cards.forEach(compareCard => {
@@ -30,22 +23,22 @@ export const Summary = ({props}) => {
         distances.min = Math.min(distances.min, distance);
       });
     });
+    console.timeEnd('calc-distances')
 
     return (
-      <div
-        style={{
-          position: "absolute",
-          right: 20,
-          top: 20,
-          backgroundColor: "#fafafa",
-          padding: "10px",
-          border: "3px solid #333"
-        }}
-      >
-        <div>You have {Object.keys(this.props.cards).length} cards!</div>
+      <div className={`Summary Summary-${position}`}>
+        <div>You have {Object.keys(props.cards).length} cards!</div>
         <div>Max difference in labels: {distances.max}</div>
         <div>Min difference in labels: {distances.min}</div>
+
+        <CornerButton setPosition={setPosition} corner="top-right" position={position} />
+        <CornerButton setPosition={setPosition} corner="top-left" position={position} />
+        <CornerButton setPosition={setPosition} corner="bottom-left" position={position} />
+        <CornerButton setPosition={setPosition} corner="bottom-right" position={position} />
       </div>
     );
-  }
-
+  },
+  (prevProps, newProps) =>
+    Object.values(prevProps.cards).length ===
+    Object.values(newProps.cards).length
+);
