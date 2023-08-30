@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect, useCallback, lazy, Suspense } from "react";
 import "./App.css";
 import useComponentSize from "@rehooks/component-size";
 import cardData from "./data.json";
@@ -6,7 +6,9 @@ import uuid from "uuid";
 import { Card } from "./Card";
 import { AddButton } from "./AddButton";
 import { Summary } from "./Summary";
-import { AddModal } from "./AddModal";
+const AddModal = lazy(() => import("./AddModal"));
+
+const ModalLoader = () => <div className="modal-loader">Loading...</div>;
 
 function positionCards(cards, width, height) {
   const updatedCards = {};
@@ -30,15 +32,6 @@ function parseData() {
 
   cardData.forEach(task => {
     cards[task.id] = task;
-
-    for (let i = 0; i < 50; i++) {
-      const clonedCard = {
-        ...task,
-        id: uuid.v4(),
-        label: `${task.label}-(${i})`
-      };
-      cards[clonedCard.id] = clonedCard;
-    }
   });
 
   return cards;
@@ -124,7 +117,8 @@ function App() {
       <Summary cards={cards} />
       <AddButton onClick={showDialog} />
       {isAddOpen && (
-        <AddModal
+        <Suspense fallback={<ModalLoader />}>
+          <AddModal
           isOpen={isAddOpen}
           onClose={() => setIsAddOpen(false)}
           onAdd={cardText => {
@@ -136,6 +130,7 @@ function App() {
             setCards(updatedCards);
           }}
         />
+        </Suspense>
       )}
     </div>
   );
